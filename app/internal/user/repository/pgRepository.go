@@ -2,10 +2,10 @@ package repository
 
 import (
 	"context"
-	"ninja-chat/config"
+	"ninja-chat-core-api/config"
 
-	models "ninja-chat/internal/models/user"
-	"ninja-chat/internal/user"
+	models "ninja-chat-core-api/internal/models/user"
+	"ninja-chat-core-api/internal/user"
 
 	"github.com/jmoiron/sqlx"
 )

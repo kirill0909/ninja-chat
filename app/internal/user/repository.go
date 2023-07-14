@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"ninja-chat/internal/models/user"
+	"ninja-chat-core-api/internal/models/user"
 )
 
 type PGRepo interface {

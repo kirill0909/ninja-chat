@@ -2,9 +2,9 @@ package usecase
 
 import (
 	"context"
-	"ninja-chat/config"
-	models "ninja-chat/internal/models/user"
-	"ninja-chat/internal/user"
+	"ninja-chat-core-api/config"
+	models "ninja-chat-core-api/internal/models/user"
+	"ninja-chat-core-api/internal/user"
 )
 
 type UserUsecase struct {

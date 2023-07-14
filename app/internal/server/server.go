@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"ninja-chat/config"
+	"ninja-chat-core-api/config"
 
 	"github.com/gofiber/fiber/v2"
 	"google.golang.org/grpc"
 
-	pb "ninja-chat/pkg/proto"
+	pb "ninja-chat-core-api/pkg/proto"
 
 	"google.golang.org/grpc/reflection"
 

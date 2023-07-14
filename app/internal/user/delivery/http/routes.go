@@ -2,7 +2,7 @@ package http
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"ninja-chat/internal/user"
+	"ninja-chat-core-api/internal/user"
 )
 
 func MapUserRoutes(userRoutes fiber.Router, h user.Handler) {
