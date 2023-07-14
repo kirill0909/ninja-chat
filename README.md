@@ -1,1 +1,1 @@
-# ninja-chat
+# ninja-chat-core-api
