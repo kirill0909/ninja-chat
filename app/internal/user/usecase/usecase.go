@@ -1,20 +1,21 @@
 package usecase
 
 import (
+	"context"
 	"ninja-chat/config"
+	models "ninja-chat/internal/models/user"
 	"ninja-chat/internal/user"
-	"sync"
 )
 
-var (
-	count int64
-)
-
-type ProductUsecase struct {
+type UserUsecase struct {
 	cfg        *config.Config
-	productMap sync.Map
+	userPGRepo user.PGRepo
 }
 
-func NewProducetUsecase(cfg *config.Config) user.Usecase {
-	return &ProductUsecase{cfg: cfg}
+func NewUserUsecase(cfg *config.Config, userPGRepo user.PGRepo) user.Usecase {
+	return &UserUsecase{cfg: cfg, userPGRepo: userPGRepo}
+}
+
+func (u *UserUsecase) Registration(ctx context.Context, req models.RegistrationRequest) (err error) {
+	return u.userPGRepo.Registration(ctx, req)
 }

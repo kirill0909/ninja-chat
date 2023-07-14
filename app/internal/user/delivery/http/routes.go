@@ -5,5 +5,6 @@ import (
 	"ninja-chat/internal/user"
 )
 
-func MapProductRoutes(productRoutes fiber.Router, h user.Handler) {
+func MapUserRoutes(userRoutes fiber.Router, h user.Handler) {
+	userRoutes.Post("/registration", h.Registration())
 }

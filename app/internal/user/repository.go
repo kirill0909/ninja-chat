@@ -5,6 +5,6 @@ import (
 	"ninja-chat/internal/models/user"
 )
 
-type Repository interface {
+type PGRepo interface {
 	Registration(ctx context.Context, req models.RegistrationRequest) (err error)
 }

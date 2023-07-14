@@ -2,16 +2,19 @@ package main
 
 import (
 	"context"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"log"
 	"ninja-chat/config"
 	"ninja-chat/internal/server"
 	httpUser "ninja-chat/internal/user/delivery/http"
+	pgRepoUser "ninja-chat/internal/user/repository"
 	usecaseUser "ninja-chat/internal/user/usecase"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/jmoiron/sqlx"
 )
 
 func main() {
@@ -47,19 +50,22 @@ func mapHandler(cfg *config.Config) (*fiber.App, server.Deps) {
 	app := fiber.New(fiber.Config{DisableStartupMessage: true})
 	app.Use(logger.New())
 
+	// repository
+	userPGRepo := pgRepoUser.NewUserPGRepo(cfg, &sqlx.DB{}) // TODO: rewrite kostil
+
 	// usecase
-	productUC := usecaseUser.NewProducetUsecase(cfg)
+	userUC := usecaseUser.NewUserUsecase(cfg, userPGRepo)
 
 	// handler
-	productHTTP := httpUser.NewProductHandler(cfg, productUC)
+	userHTTP := httpUser.NewUserHandler(cfg, userUC)
 	// productGRPC := grpcProduct.NewProductHandler(productUC)
 
 	// groups
 	apiGroup := app.Group("api")
-	productGroup := apiGroup.Group("product")
+	userGroup := apiGroup.Group("user")
 
 	// routes
-	httpUser.MapProductRoutes(productGroup, productHTTP)
+	httpUser.MapUserRoutes(userGroup, userHTTP)
 
 	// create grpc dependencyes
 	deps := server.Deps{ /* ProductDeps: productGRPC */ }
