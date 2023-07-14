@@ -8,6 +8,7 @@ import (
 	httpUser "ninja-chat-core-api/internal/user/delivery/http"
 	pgRepoUser "ninja-chat-core-api/internal/user/repository"
 	usecaseUser "ninja-chat-core-api/internal/user/usecase"
+	"ninja-chat-core-api/pkg/storage/postgres"
 	"os"
 	"os/signal"
 	"syscall"
@@ -29,10 +30,18 @@ func main() {
 	}
 	log.Println("Config loaded")
 
-	app, deps := mapHandler(cfg)
+	ctx := context.Background()
+	psqlDB, err := postgres.InitPsqlDB(ctx, cfg)
+	if err != nil {
+		log.Printf("PostgreSQL error connection: %s", err.Error())
+		return
+	} else {
+		log.Println("PostgreSQL successful connection")
+	}
+
+	app, deps := mapHandler(cfg, psqlDB)
 	server := server.NewServer(app, deps, cfg)
 
-	ctx := context.Background()
 	if err := server.Run(ctx); err != nil {
 		log.Println(err)
 		return
@@ -45,13 +54,13 @@ func main() {
 	server.Shutdown()
 }
 
-func mapHandler(cfg *config.Config) (*fiber.App, server.Deps) {
+func mapHandler(cfg *config.Config, db *sqlx.DB) (*fiber.App, server.Deps) {
 	// create App
 	app := fiber.New(fiber.Config{DisableStartupMessage: true})
 	app.Use(logger.New())
 
 	// repository
-	userPGRepo := pgRepoUser.NewUserPGRepo(cfg, &sqlx.DB{}) // TODO: rewrite kostil
+	userPGRepo := pgRepoUser.NewUserPGRepo(cfg, db)
 
 	// usecase
 	userUC := usecaseUser.NewUserUsecase(cfg, userPGRepo)
