@@ -11,6 +11,7 @@ import (
 type Config struct {
 	Server   Server
 	Postgres Postgres
+	Redis    Redis
 }
 
 type Server struct {
@@ -26,6 +27,13 @@ type Postgres struct {
 	Password string `validate:"required"`
 	DBName   string `validate:"required"`
 	SSLMode  string `validate:"required"`
+}
+
+type Redis struct {
+	Host     string `validate:"requried"`
+	Port     string `validate:"requried"`
+	Password string `validate:"requried"`
+	DB       int    `validate:"required"`
 }
 
 func LoadConfig() (*viper.Viper, error) {
