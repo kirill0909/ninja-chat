@@ -13,6 +13,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"ninja-chat-core-api/internal/middleware"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/jmoiron/sqlx"
@@ -73,8 +75,10 @@ func mapHandler(cfg *config.Config, db *sqlx.DB) (*fiber.App, server.Deps) {
 	apiGroup := app.Group("api")
 	userGroup := apiGroup.Group("user")
 
+	mw := middleware.NewMDWManager(cfg, userUC)
+
 	// routes
-	httpUser.MapUserRoutes(userGroup, userHTTP)
+	httpUser.MapUserRoutes(userGroup, mw, userHTTP)
 
 	// create grpc dependencyes
 	deps := server.Deps{ /* ProductDeps: productGRPC */ }

@@ -9,6 +9,7 @@ require (
 	github.com/jackc/pgx/v4 v4.18.1
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/philip-bui/grpc-zerolog v1.0.1
+	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.29.1
 	github.com/spf13/viper v1.16.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0
