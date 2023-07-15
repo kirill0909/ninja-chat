@@ -5,6 +5,7 @@ import (
 	"ninja-chat-core-api/config"
 	models "ninja-chat-core-api/internal/models/user"
 	"ninja-chat-core-api/internal/user"
+	"ninja-chat-core-api/pkg/reqvalidator"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,6 +23,10 @@ func (h *UserHandler) Registration() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 
 		var req models.RegistrationRequest
+		if err := reqvalidator.ReadRequest(c, &req); err != nil {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
 		if err := h.userUC.Registration(c.Context(), req); err != nil {
 			log.Println(err)
 			return c.SendStatus(fiber.StatusInternalServerError)
