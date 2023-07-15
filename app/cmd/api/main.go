@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	redisSource "github.com/go-redis/redis"
 	"log"
 	"ninja-chat-core-api/config"
 	"ninja-chat-core-api/internal/server"
@@ -9,6 +10,7 @@ import (
 	pgRepoUser "ninja-chat-core-api/internal/user/repository"
 	usecaseUser "ninja-chat-core-api/internal/user/usecase"
 	"ninja-chat-core-api/pkg/storage/postgres"
+	redisClient "ninja-chat-core-api/pkg/storage/redis"
 	"os"
 	"os/signal"
 	"syscall"
@@ -39,7 +41,23 @@ func main() {
 		return
 	} else {
 		log.Println("PostgreSQL successful connection")
+	} // TODO: add close connection for postgres
+
+	rdb, err := redisClient.InitRedis(cfg)
+	if err != nil {
+		log.Printf("Redis error connection: %s", err.Error())
+		return
+	} else {
+		log.Println("Redis successful connection")
 	}
+	defer func(redisClient *redisSource.Client) {
+		if err := redisClient.Close(); err != nil {
+			log.Printf("Redis unable to close connection: %s", err.Error())
+		} else {
+			log.Println("Redis successful close connection")
+		}
+
+	}(rdb)
 
 	app, deps := mapHandler(cfg, psqlDB)
 	server := server.NewServer(app, deps, cfg)

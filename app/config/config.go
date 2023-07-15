@@ -30,9 +30,9 @@ type Postgres struct {
 }
 
 type Redis struct {
-	Host     string `validate:"requried"`
-	Port     string `validate:"requried"`
-	Password string `validate:"requried"`
+	Host     string `validate:"required"`
+	Port     string `validate:"required"`
+	Password string `validate:"required"`
 	DB       int    `validate:"required"`
 }
 
