@@ -40,5 +40,9 @@ func (u *UserUsecase) Login(ctx context.Context, req models.UserLoginRequest) (u
 		return 0, sql.ErrNoRows
 	}
 
+	if err = bcrypt.CompareHashAndPassword([]byte(authData.PasswordHash), []byte(req.Password)); err != nil {
+		return 0, err
+	}
+
 	return authData.UserID, nil
 }

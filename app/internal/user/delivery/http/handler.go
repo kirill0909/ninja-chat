@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgconn"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/pkg/errors"
 )
@@ -55,8 +56,10 @@ func (h *UserHandler) Login() fiber.Handler {
 		_, err := h.userUC.Login(c.Context(), req)
 		if err != nil {
 			log.Printf("user.delivery.http.Login: %s", err.Error())
-			if errors.As(err, &sql.ErrNoRows) {
+			if errors.Is(err, sql.ErrNoRows) {
 				return c.Status(fiber.ErrNotFound.Code).JSON(models.UserLoginResponse{Error: "Unable to find user"})
+			} else if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+				return c.Status(fiber.ErrNotFound.Code).JSON(models.UserLoginResponse{Error: "Invalid password"})
 			}
 			return c.SendStatus(fiber.StatusInternalServerError)
 		}
