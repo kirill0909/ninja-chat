@@ -9,6 +9,7 @@
 *.dylib
 config/config.json
 *config.json
+migrations/
 
 # Test binary, built with `go test -c`
 *.test
