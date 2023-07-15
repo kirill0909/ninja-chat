@@ -40,7 +40,7 @@ func (h *UserHandler) Registration() fiber.Handler {
 			return c.SendStatus(fiber.StatusInternalServerError)
 		}
 
-		return c.Status(fiber.StatusOK).JSON(models.RegistrationResponse{Success: "Successful registration"})
+		return c.Status(fiber.StatusOK).JSON(models.RegistrationResponse{Success: true})
 	}
 }
 

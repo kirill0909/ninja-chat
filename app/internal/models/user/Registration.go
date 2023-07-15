@@ -6,7 +6,7 @@ type RegistrationRequest struct {
 }
 
 type RegistrationResponse struct {
-	Success string `json:"success,omitempty"`
+	Success bool   `json:"success,omitempty"`
 	Error   string `json:"error,omitempty"`
 }
 
