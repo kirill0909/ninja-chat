@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"log"
 	"ninja-chat-core-api/config"
 
 	models "ninja-chat-core-api/internal/models/user"
@@ -20,5 +21,6 @@ func NewUserPGRepo(cfg *config.Config, db *sqlx.DB) user.PGRepo {
 }
 
 func (r *UserPGRepo) Registration(ctx context.Context, req models.RegistrationRequest) (err error) {
+	log.Printf("%+v", req)
 	return nil
 }
