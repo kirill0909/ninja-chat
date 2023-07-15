@@ -2,20 +2,20 @@ package usecase
 
 import (
 	"context"
+	"golang.org/x/crypto/bcrypt"
 	"ninja-chat-core-api/config"
 	models "ninja-chat-core-api/internal/models/user"
 	"ninja-chat-core-api/internal/user"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUsecase struct {
-	cfg        *config.Config
-	userPGRepo user.PGRepo
+	cfg           *config.Config
+	userPGRepo    user.PGRepo
+	userRedisRepo user.RedisRepo
 }
 
-func NewUserUsecase(cfg *config.Config, userPGRepo user.PGRepo) user.Usecase {
-	return &UserUsecase{cfg: cfg, userPGRepo: userPGRepo}
+func NewUserUsecase(cfg *config.Config, userPGRepo user.PGRepo, userRedisRepo user.RedisRepo) user.Usecase {
+	return &UserUsecase{cfg: cfg, userPGRepo: userPGRepo, userRedisRepo: userRedisRepo}
 }
 
 func (u *UserUsecase) Registration(ctx context.Context, req models.RegistrationRequest) error {

@@ -8,6 +8,7 @@ import (
 	"ninja-chat-core-api/internal/server"
 	httpUser "ninja-chat-core-api/internal/user/delivery/http"
 	pgRepoUser "ninja-chat-core-api/internal/user/repository"
+	redisRepoUser "ninja-chat-core-api/internal/user/repository"
 	usecaseUser "ninja-chat-core-api/internal/user/usecase"
 	"ninja-chat-core-api/pkg/storage/postgres"
 	redisClient "ninja-chat-core-api/pkg/storage/redis"
@@ -68,7 +69,7 @@ func main() {
 
 	}(rdb)
 
-	app, deps := mapHandler(cfg, psqlDB)
+	app, deps := mapHandler(cfg, psqlDB, rdb)
 	server := server.NewServer(app, deps, cfg)
 
 	if err := server.Run(ctx); err != nil {
@@ -83,16 +84,17 @@ func main() {
 	server.Shutdown()
 }
 
-func mapHandler(cfg *config.Config, db *sqlx.DB) (*fiber.App, server.Deps) {
+func mapHandler(cfg *config.Config, db *sqlx.DB, rdb *redisSource.Client) (*fiber.App, server.Deps) {
 	// create App
 	app := fiber.New(fiber.Config{DisableStartupMessage: true})
 	app.Use(logger.New())
 
 	// repository
 	userPGRepo := pgRepoUser.NewUserPGRepo(cfg, db)
+	userRedisRepo := redisRepoUser.NewRedisRepo(cfg, rdb)
 
 	// usecase
-	userUC := usecaseUser.NewUserUsecase(cfg, userPGRepo)
+	userUC := usecaseUser.NewUserUsecase(cfg, userPGRepo, userRedisRepo)
 
 	// handler
 	userHTTP := httpUser.NewUserHandler(cfg, userUC)

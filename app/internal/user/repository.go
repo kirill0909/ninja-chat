@@ -9,3 +9,5 @@ type PGRepo interface {
 	Registration(ctx context.Context, req models.RegistrationRequest) (err error)
 	Login(ctx context.Context, req models.UserLoginRequest) (userID int, err error)
 }
+
+type RedisRepo interface{}
