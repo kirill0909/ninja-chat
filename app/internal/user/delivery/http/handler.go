@@ -8,6 +8,9 @@ import (
 	"ninja-chat-core-api/pkg/reqvalidator"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgconn"
+
+	"github.com/pkg/errors"
 )
 
 type UserHandler struct {
@@ -28,10 +31,14 @@ func (h *UserHandler) Registration() fiber.Handler {
 		}
 
 		if err := h.userUC.Registration(c.Context(), req); err != nil {
-			log.Println(err)
+			log.Printf("users.delivery.http.Registration:%s", err.Error())
+			var pgErr *pgconn.PgError
+			if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+				return c.Status(fiber.StatusBadRequest).JSON(models.RegistrationResponse{Error: "This login alread exists"})
+			}
 			return c.SendStatus(fiber.StatusInternalServerError)
 		}
 
-		return c.SendStatus(fiber.StatusOK)
+		return c.Status(fiber.StatusOK).JSON(models.RegistrationResponse{Success: "Successful registration"})
 	}
 }

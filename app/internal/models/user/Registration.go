@@ -5,6 +5,11 @@ type RegistrationRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
+type RegistrationResponse struct {
+	Success string `json:"success,omitempty"`
+	Error   string `json:"error,omitempty"`
+}
+
 type NonAuthHeaders struct {
 	APIKey string `json:"Api-Key"`
 }
