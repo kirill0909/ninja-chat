@@ -54,7 +54,8 @@ func (h *UserHandler) Login() fiber.Handler {
 
 		_, err := h.userUC.Login(c.Context(), req)
 		if err != nil {
-			if errors.As(err, sql.ErrNoRows) {
+			log.Printf("user.delivery.http.Login: %s", err.Error())
+			if errors.As(err, &sql.ErrNoRows) {
 				return c.Status(fiber.ErrNotFound.Code).JSON(models.UserLoginResponse{Error: "Unable to find user"})
 			}
 			return c.SendStatus(fiber.StatusInternalServerError)

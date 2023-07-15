@@ -26,6 +26,11 @@ func (r *UserPGRepo) Registration(ctx context.Context, req models.RegistrationRe
 	return nil
 }
 
-func (r *UserPGRepo) Login(ctx context.Context, req models.UserLoginRequest) (userID int, err error) {
-	return 0, nil
+func (r *UserPGRepo) Login(ctx context.Context, req models.UserLoginRequest) (models.AuthData, error) {
+	var result models.AuthData
+	if err := r.db.GetContext(ctx, &result, queryLogin, req.Login); err != nil {
+		return models.AuthData{}, err
+	}
+
+	return result, nil
 }
