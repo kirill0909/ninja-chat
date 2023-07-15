@@ -1,4 +1,4 @@
-package models
+package user
 
 type RegistrationRequest struct {
 	Login    string `json:"login" validate:"required"`
