@@ -41,7 +41,16 @@ func main() {
 		return
 	} else {
 		log.Println("PostgreSQL successful connection")
-	} // TODO: add close connection for postgres
+	}
+	defer func(psqlDB *sqlx.DB) {
+		if err := psqlDB.Close(); err != nil {
+			log.Printf("PostgreSQL error close connection: %s", err.Error())
+			return
+		} else {
+			log.Println("PostgreSQL successful close connection")
+		}
+
+	}(psqlDB)
 
 	rdb, err := redisClient.InitRedis(cfg)
 	if err != nil {
