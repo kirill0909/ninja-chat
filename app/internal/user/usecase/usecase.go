@@ -19,6 +19,7 @@ func NewUserUsecase(cfg *config.Config, userPGRepo user.PGRepo) user.Usecase {
 }
 
 func (u *UserUsecase) Registration(ctx context.Context, req models.RegistrationRequest) error {
+	// TODO: add solt
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
