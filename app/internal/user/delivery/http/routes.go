@@ -8,4 +8,5 @@ import (
 
 func MapUserRoutes(userRoutes fiber.Router, mw *middleware.MDWManager, h user.Handler) {
 	userRoutes.Post("/registration", mw.NonAuthedMiddleware(), h.Registration())
+	userRoutes.Post("/login", mw.NonAuthedMiddleware(), h.Login())
 }

@@ -1,6 +1,7 @@
 package http
 
 import (
+	"database/sql"
 	"log"
 	"ninja-chat-core-api/config"
 	models "ninja-chat-core-api/internal/models/user"
@@ -40,5 +41,25 @@ func (h *UserHandler) Registration() fiber.Handler {
 		}
 
 		return c.Status(fiber.StatusOK).JSON(models.RegistrationResponse{Success: "Successful registration"})
+	}
+}
+
+func (h *UserHandler) Login() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+
+		var req models.UserLoginRequest
+		if err := reqvalidator.ReadRequest(c, &req); err != nil {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		_, err := h.userUC.Login(c.Context(), req)
+		if err != nil {
+			if errors.As(err, sql.ErrNoRows) {
+				return c.Status(fiber.ErrNotFound.Code).JSON(models.UserLoginResponse{Error: "Unable to find user"})
+			}
+			return c.SendStatus(fiber.StatusInternalServerError)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(models.UserLoginResponse{Success: true})
 	}
 }

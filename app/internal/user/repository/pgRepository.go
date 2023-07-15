@@ -25,3 +25,7 @@ func (r *UserPGRepo) Registration(ctx context.Context, req models.RegistrationRe
 	}
 	return nil
 }
+
+func (r *UserPGRepo) Login(ctx context.Context, req models.UserLoginRequest) (userID int, err error) {
+	return 0, nil
+}

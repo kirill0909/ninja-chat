@@ -28,3 +28,7 @@ func (u *UserUsecase) Registration(ctx context.Context, req models.RegistrationR
 
 	return u.userPGRepo.Registration(ctx, req)
 }
+
+func (u *UserUsecase) Login(ctx context.Context, req models.UserLoginRequest) (userID int, err error) {
+	return u.userPGRepo.Login(ctx, req)
+}
