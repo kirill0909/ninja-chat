@@ -8,7 +8,9 @@ import (
 	"ninja-chat-core-api/internal/user"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
+	"github.com/pkg/errors"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -37,14 +39,14 @@ func (u *UserUsecase) Registration(ctx context.Context, req models.RegistrationR
 func (u *UserUsecase) Login(ctx context.Context, req models.UserLoginRequest) (models.UserLoginResponse, error) {
 	authData, err := u.userPGRepo.Login(ctx, req)
 	if err != nil {
-		return models.UserLoginResponse{Error: "Unable to get auth data"}, err
-	}
-	if authData.UserID == 0 {
-		return models.UserLoginResponse{}, sql.ErrNoRows
+		if errors.Is(err, sql.ErrNoRows) {
+			return models.UserLoginResponse{Error: "Unable to find user", Code: fiber.ErrNotFound.Code}, sql.ErrNoRows
+		}
+		return models.UserLoginResponse{Error: "Unable to get auth data", Code: fiber.ErrInternalServerError.Code}, err
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(authData.PasswordHash), []byte(req.Password)); err != nil {
-		return models.UserLoginResponse{}, err
+		return models.UserLoginResponse{Error: "Invalid password", Code: fiber.ErrBadRequest.Code}, err
 	}
 
 	var tokenData models.TokenData
@@ -57,7 +59,7 @@ func (u *UserUsecase) Login(ctx context.Context, req models.UserLoginRequest) (m
 		AccessToken: tokenData.AccessToken,
 		ExpireAt:    int(time.Hour * 24),
 	}); err != nil {
-		return models.UserLoginResponse{Error: "Unable to save user sesssion"}, err
+		return models.UserLoginResponse{Error: "Unable to save user sesssion", Code: fiber.ErrInternalServerError.Code}, err
 	}
 
 	return models.UserLoginResponse{Success: true, AccessToken: tokenData.AccessToken}, nil

@@ -9,6 +9,7 @@ type UserLoginResponse struct {
 	Success     bool   `json:"success,omitempty"`
 	AccessToken string `json:"access_token,omitempty"`
 	Error       string `json:"error,omitempty"`
+	Code        int    `json:"code,omitempty"`
 }
 
 type AuthData struct {
