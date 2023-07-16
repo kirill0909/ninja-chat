@@ -1,11 +1,12 @@
 package redis
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"ninja-chat-core-api/config"
 
-	"github.com/go-redis/redis"
+	"github.com/redis/go-redis/v9"
 )
 
 func InitRedis(cfg *config.Config) (*redis.Client, error) {
@@ -15,7 +16,7 @@ func InitRedis(cfg *config.Config) (*redis.Client, error) {
 		DB:       cfg.Redis.DB,
 	})
 
-	_, err := redisClient.Ping().Result()
+	_, err := redisClient.Ping(context.Background()).Result()
 	if err != nil {
 		log.Println(err)
 		return nil, err

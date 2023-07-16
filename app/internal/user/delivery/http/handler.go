@@ -53,7 +53,7 @@ func (h *UserHandler) Login() fiber.Handler {
 			return c.SendStatus(fiber.StatusBadRequest)
 		}
 
-		_, err := h.userUC.Login(c.Context(), req)
+		result, err := h.userUC.Login(c.Context(), req)
 		if err != nil {
 			log.Printf("user.delivery.http.Login: %s", err.Error())
 			if errors.Is(err, sql.ErrNoRows) {
@@ -64,6 +64,6 @@ func (h *UserHandler) Login() fiber.Handler {
 			return c.SendStatus(fiber.StatusInternalServerError)
 		}
 
-		return c.Status(fiber.StatusOK).JSON(models.UserLoginResponse{Success: true})
+		return c.Status(fiber.StatusOK).JSON(result)
 	}
 }

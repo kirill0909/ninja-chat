@@ -6,13 +6,22 @@ type UserLoginRequest struct {
 }
 
 type UserLoginResponse struct {
-	Success      bool   `json:"success,omitempty"`
-	AccessToken  string `json:"access_token,omitempty"`
-	RefreshToken string `json:"refresh_token,omitempty"`
-	Error        string `json:"error,omitempty"`
+	Success     bool   `json:"success,omitempty"`
+	AccessToken string `json:"access_token,omitempty"`
+	Error       string `json:"error,omitempty"`
 }
 
 type AuthData struct {
 	UserID       int    `db:"id"`
 	PasswordHash string `db:"password_hash"`
+}
+
+type TokenData struct {
+	AccessToken string
+}
+
+type ClientSession struct {
+	UserID      int    `json:"userID"`
+	AccessToken string `json:"accessToken"`
+	ExpireAt    int    `json:"expireAt"`
 }

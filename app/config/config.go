@@ -9,9 +9,10 @@ import (
 )
 
 type Config struct {
-	Server   Server
-	Postgres Postgres
-	Redis    Redis
+	Server    Server
+	Postgres  Postgres
+	Redis     Redis
+	JWTSecret string `validate:"required"`
 }
 
 type Server struct {

@@ -10,4 +10,6 @@ type PGRepo interface {
 	Login(ctx context.Context, req models.UserLoginRequest) (result models.AuthData, err error)
 }
 
-type RedisRepo interface{}
+type RedisRepo interface {
+	SaveUserSession(context.Context, models.ClientSession) error
+}

@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	redisSource "github.com/go-redis/redis"
+	redisSource "github.com/redis/go-redis/v9"
 	"log"
 	"ninja-chat-core-api/config"
 	"ninja-chat-core-api/internal/server"
