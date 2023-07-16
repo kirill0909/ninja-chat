@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"database/sql"
+	"github.com/jackc/pgconn"
 	"ninja-chat-core-api/config"
 	models "ninja-chat-core-api/internal/models/user"
 	"ninja-chat-core-api/internal/user"
@@ -25,15 +26,23 @@ func NewUserUsecase(cfg *config.Config, userPGRepo user.PGRepo, userRedisRepo us
 	return &UserUsecase{cfg: cfg, userPGRepo: userPGRepo, userRedisRepo: userRedisRepo}
 }
 
-func (u *UserUsecase) Registration(ctx context.Context, req models.RegistrationRequest) error {
+func (u *UserUsecase) Registration(ctx context.Context, req models.RegistrationRequest) (models.RegistrationResponse, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return models.RegistrationResponse{Code: fiber.ErrInternalServerError.Code}, err
 	}
 
 	req.Password = string(hashedPassword)
 
-	return u.userPGRepo.Registration(ctx, req)
+	if err = u.userPGRepo.Registration(ctx, req); err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			return models.RegistrationResponse{Error: "This login already exists", Code: fiber.ErrBadRequest.Code}, err
+		}
+		return models.RegistrationResponse{Error: "Registration cannot be performed", Code: fiber.ErrInternalServerError.Code}, err
+	}
+
+	return models.RegistrationResponse{Success: true, Code: fiber.StatusOK}, nil
 }
 
 func (u *UserUsecase) Login(ctx context.Context, req models.UserLoginRequest) (models.UserLoginResponse, error) {
@@ -51,7 +60,7 @@ func (u *UserUsecase) Login(ctx context.Context, req models.UserLoginRequest) (m
 
 	var tokenData models.TokenData
 	if tokenData, err = u.createSession(authData); err != nil {
-		return models.UserLoginResponse{Error: "Unable to create session"}, err
+		return models.UserLoginResponse{Error: "Unable to create session", Code: fiber.ErrInternalServerError.Code}, err
 	}
 
 	if err = u.userRedisRepo.SaveUserSession(ctx, models.ClientSession{
@@ -62,7 +71,7 @@ func (u *UserUsecase) Login(ctx context.Context, req models.UserLoginRequest) (m
 		return models.UserLoginResponse{Error: "Unable to save user sesssion", Code: fiber.ErrInternalServerError.Code}, err
 	}
 
-	return models.UserLoginResponse{Success: true, AccessToken: tokenData.AccessToken}, nil
+	return models.UserLoginResponse{Success: true, Code: fiber.StatusOK, AccessToken: tokenData.AccessToken}, nil
 }
 
 func (u *UserUsecase) createSession(authData models.AuthData) (models.TokenData, error) {

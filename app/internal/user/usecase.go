@@ -6,6 +6,6 @@ import (
 )
 
 type Usecase interface {
-	Registration(ctx context.Context, req models.RegistrationRequest) (err error)
+	Registration(ctx context.Context, req models.RegistrationRequest) (result models.RegistrationResponse, err error)
 	Login(ctx context.Context, req models.UserLoginRequest) (result models.UserLoginResponse, err error)
 }

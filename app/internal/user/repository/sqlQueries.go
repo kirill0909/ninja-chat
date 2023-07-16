@@ -2,7 +2,7 @@ package repository
 
 const (
 	queryRegistration = `
-  INSERT INTO users (login, hashed_password) VALUES ($1, $2)
+  INSERT INTO users (login, password_hash) VALUES ($1, $2)
   `
 
 	queryLogin = `

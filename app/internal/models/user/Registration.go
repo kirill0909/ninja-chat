@@ -8,6 +8,7 @@ type RegistrationRequest struct {
 type RegistrationResponse struct {
 	Success bool   `json:"success,omitempty"`
 	Error   string `json:"error,omitempty"`
+	Code    int    `json:"code,omitempty"`
 }
 
 type NonAuthHeaders struct {
