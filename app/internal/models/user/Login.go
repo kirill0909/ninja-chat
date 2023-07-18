@@ -21,7 +21,7 @@ type TokenData struct {
 	AccessToken string
 }
 
-type ClientSession struct {
+type UserSession struct {
 	UserID      int    `json:"userID"`
 	AccessToken string `json:"accessToken"`
 	ExpireAt    int    `json:"expireAt"`

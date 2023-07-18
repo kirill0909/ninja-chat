@@ -63,7 +63,7 @@ func (u *UserUsecase) Login(ctx context.Context, req models.UserLoginRequest) (m
 		return models.UserLoginResponse{Error: "Unable to create session", Code: fiber.ErrInternalServerError.Code}, err
 	}
 
-	if err = u.userRedisRepo.SaveUserSession(ctx, models.ClientSession{
+	if err = u.userRedisRepo.SaveUserSession(ctx, models.UserSession{
 		UserID:      authData.UserID,
 		AccessToken: tokenData.AccessToken,
 		ExpireAt:    int(time.Hour * 24),

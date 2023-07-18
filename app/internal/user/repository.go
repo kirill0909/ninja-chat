@@ -11,5 +11,5 @@ type PGRepo interface {
 }
 
 type RedisRepo interface {
-	SaveUserSession(context.Context, models.ClientSession) error
+	SaveUserSession(context.Context, models.UserSession) error
 }
