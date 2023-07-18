@@ -9,6 +9,6 @@ const (
   SELECT
   id AS id,
   password_hash AS password_hash
-  FROM users WHERE login = $1
+  FROM users.user WHERE login = $1
   `
 )

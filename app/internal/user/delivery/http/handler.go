@@ -24,12 +24,13 @@ func (h *UserHandler) Registration() fiber.Handler {
 
 		var req models.RegistrationRequest
 		if err := reqvalidator.ReadRequest(c, &req); err != nil {
+			log.Println(err)
 			return c.SendStatus(fiber.StatusBadRequest)
 		}
 
 		result, err := h.userUC.Registration(c.Context(), req)
 		if err != nil {
-			log.Printf("users.delivery.http.Registration:%s", err.Error())
+			log.Printf("%s:%s users.delivery.http.Registration", err.Error(), result.Error)
 			return c.Status(result.Code).JSON(result)
 		}
 
@@ -42,12 +43,13 @@ func (h *UserHandler) Login() fiber.Handler {
 
 		var req models.UserLoginRequest
 		if err := reqvalidator.ReadRequest(c, &req); err != nil {
+			log.Println(err)
 			return c.SendStatus(fiber.StatusBadRequest)
 		}
 
 		result, err := h.userUC.Login(c.Context(), req)
 		if err != nil {
-			log.Printf("user.delivery.http.Login: %s", err.Error())
+			log.Printf("%s:%s user.delivery.http.Login", err.Error(), result.Error)
 			return c.Status(result.Code).JSON(result)
 		}
 
