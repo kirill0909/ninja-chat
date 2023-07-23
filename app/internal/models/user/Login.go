@@ -24,5 +24,5 @@ type TokenData struct {
 type UserSession struct {
 	UserID      int    `json:"userID"`
 	AccessToken string `json:"accessToken"`
-	ExpireAt    int    `json:"expireAt"`
+	ExpiredAt   int    `json:"expiredAt"`
 }

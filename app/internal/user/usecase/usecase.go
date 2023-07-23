@@ -66,7 +66,7 @@ func (u *UserUsecase) Login(ctx context.Context, req models.UserLoginRequest) (m
 	if err = u.userRedisRepo.SaveUserSession(ctx, models.UserSession{
 		UserID:      authData.UserID,
 		AccessToken: tokenData.AccessToken,
-		ExpireAt:    int(time.Hour * 24),
+		ExpiredAt:   int(time.Hour * 24),
 	}); err != nil {
 		return models.UserLoginResponse{Error: saveSessionError, Code: fiber.ErrInternalServerError.Code}, err
 	}

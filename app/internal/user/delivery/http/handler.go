@@ -28,6 +28,11 @@ func (h *UserHandler) Registration() fiber.Handler {
 			return c.SendStatus(fiber.StatusBadRequest)
 		}
 
+		if res := req.Validate(); !res {
+			log.Printf("empty string for login(%s) or password(%s)", req.Login, req.Password)
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
 		result, err := h.userUC.Registration(c.Context(), req)
 		if err != nil {
 			log.Printf("%s:%s users.delivery.http.Registration", err.Error(), result.Error)
@@ -59,6 +64,7 @@ func (h *UserHandler) Login() fiber.Handler {
 
 func (h *UserHandler) Logout() fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		// TODO: remove user session from redis
 		return nil
 	}
 }
