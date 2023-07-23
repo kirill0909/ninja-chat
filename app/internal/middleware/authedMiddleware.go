@@ -45,6 +45,7 @@ func (md *MDWManager) AuthedMiddleware() fiber.Handler {
 			return c.SendStatus(fiber.StatusNotFound)
 		}
 
+		// TODO: check this. Because redis deletes the keys that have expired on its own
 		if int64(expiredAt) <= time.Now().Unix() {
 			log.Printf("session time(%d) expired for user(%d). middleware.AuthedMiddleware", expiredAt, userID)
 			return c.SendStatus(fiber.StatusBadRequest)
