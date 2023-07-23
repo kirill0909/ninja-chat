@@ -10,10 +10,10 @@ func (m *MDWManager) NonAuthedMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 
 		nonAuthHeaders := models.NonAuthHeaders{
-			APIKey: c.Get("Api-Key"),
+			APIKey: c.Get("ApiKey"),
 		}
 
-		if err := m.validateHeaders(nonAuthHeaders); err != nil {
+		if err := m.validateNonAuthHeaders(nonAuthHeaders); err != nil {
 			log.Println(err)
 			return c.SendStatus(fiber.StatusUnauthorized)
 		}

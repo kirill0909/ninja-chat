@@ -10,7 +10,3 @@ type RegistrationResponse struct {
 	Error   string `json:"error,omitempty"`
 	Code    int    `json:"code,omitempty"`
 }
-
-type NonAuthHeaders struct {
-	APIKey string `json:"Api-Key"`
-}

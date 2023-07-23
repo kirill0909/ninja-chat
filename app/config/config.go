@@ -13,6 +13,7 @@ type Config struct {
 	Postgres  Postgres
 	Redis     Redis
 	JWTSecret string `validate:"required"`
+	ApiKey    string `validate:"required"`
 }
 
 type Server struct {
