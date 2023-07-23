@@ -87,3 +87,7 @@ func (u *UserUsecase) createSession(authData models.AuthData) (models.TokenData,
 
 	return models.TokenData{AccessToken: tokenString}, nil
 }
+
+func (u *UserUsecase) GetUserSession(ctx context.Context, req models.AuthHeaders) (result models.UserSession, err error) {
+	return u.userRedisRepo.GetUserSession(ctx, req)
+}

@@ -56,3 +56,9 @@ func (h *UserHandler) Login() fiber.Handler {
 		return c.Status(result.Code).JSON(result)
 	}
 }
+
+func (h *UserHandler) Logout() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		return nil
+	}
+}

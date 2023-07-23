@@ -34,3 +34,7 @@ func (r *RedisRepo) SaveUserSession(ctx context.Context, params models.UserSessi
 	}
 	return nil
 }
+
+func (r *RedisRepo) GetUserSession(ctx context.Context, req models.AuthHeaders) (result models.UserSession, err error) {
+	return
+}

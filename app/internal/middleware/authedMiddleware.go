@@ -21,6 +21,12 @@ func (md *MDWManager) AuthedMiddleware() fiber.Handler {
 			return err
 		}
 
+		_, err := md.userUC.GetUserSession(c.Context(), authHeaders)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
 		return nil
 	}
 }
