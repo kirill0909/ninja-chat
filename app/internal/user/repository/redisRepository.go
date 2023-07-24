@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ninja-chat-core-api/config"
 	"ninja-chat-core-api/internal/user"
+	"strings"
 	"time"
 
 	models "ninja-chat-core-api/internal/models/user"
@@ -53,4 +54,24 @@ func (r *RedisRepo) GetUserSession(ctx context.Context, req models.AuthHeaders) 
 	result.AccessToken = userSessionString
 
 	return
+}
+
+func (r *RedisRepo) Logout(ctx context.Context, userID int) (result models.LogoutResponse, err error) {
+
+	var session string
+	key := fmt.Sprintf("%s_%d_*", userSessionPrefix, userID)
+	iter := r.db.Scan(ctx, 0, key, 0).Iterator()
+	if iter.Next(ctx) {
+		session = iter.Val()
+	}
+
+	if strings.TrimSpace(session) == "" {
+		return models.LogoutResponse{Success: true, Code: 200}, nil
+	}
+
+	if _, err = r.db.Del(ctx, session).Result(); err != nil {
+		return models.LogoutResponse{Error: "Internal Server Error", Code: 500}, err
+	}
+
+	return models.LogoutResponse{Success: true, Code: 200}, nil
 }

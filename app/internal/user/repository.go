@@ -13,4 +13,5 @@ type PGRepo interface {
 type RedisRepo interface {
 	SaveUserSession(context.Context, models.UserSession) error
 	GetUserSession(ctx context.Context, req models.AuthHeaders) (result models.UserSession, err error)
+	Logout(ctx context.Context, userID int) (result models.LogoutResponse, err error)
 }

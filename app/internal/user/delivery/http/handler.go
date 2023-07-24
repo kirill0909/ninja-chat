@@ -64,7 +64,18 @@ func (h *UserHandler) Login() fiber.Handler {
 
 func (h *UserHandler) Logout() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		// TODO: remove user session from redis
-		return nil
+
+		userID, ok := c.Locals("userID").(int)
+		if !ok {
+			log.Println("Cannot cust userID from fiber ctx to int. user.delivery.http.Logout")
+		}
+
+		result, err := h.userUC.Logout(c.Context(), userID)
+		if err != nil {
+			log.Printf("%s:%s user.delivery.http.Logout", err.Error(), result.Error)
+			return c.Status(result.Code).JSON(result)
+		}
+
+		return c.Status(result.Code).JSON(result)
 	}
 }
