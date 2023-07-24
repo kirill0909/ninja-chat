@@ -58,8 +58,8 @@ func (r *RedisRepo) GetUserSession(ctx context.Context, req models.AuthHeaders) 
 
 func (r *RedisRepo) Logout(ctx context.Context, userID int) (result models.LogoutResponse, err error) {
 
-	key := fmt.Sprintf("%s_%d_*", userSessionPrefix, userID)
 	var session string
+	key := fmt.Sprintf("%s_%d_*", userSessionPrefix, userID)
 	iter := r.db.Scan(ctx, 0, key, 0).Iterator()
 	if iter.Next(ctx) {
 		session = iter.Val()
