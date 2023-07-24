@@ -70,9 +70,12 @@ func (h *UserHandler) Logout() fiber.Handler {
 			log.Println("Cannot get userID from fiber ctx. user.delivery.http.Logout")
 		}
 
-		log.Println(userID)
+		result, err := h.userUC.Logout(c.Context(), userID)
+		if err != nil {
+			log.Printf("%s:%s user.delivery.http.Logout", err.Error(), result.Error)
+			return c.Status(result.Code).JSON(result)
+		}
 
-		// TODO: remove user session from redis
-		return nil
+		return c.Status(result.Code).JSON(result)
 	}
 }
