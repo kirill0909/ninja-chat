@@ -67,7 +67,7 @@ func (h *UserHandler) Logout() fiber.Handler {
 
 		userID, ok := c.Locals("userID").(int)
 		if !ok {
-			log.Println("Cannot get userID from fiber ctx. user.delivery.http.Logout")
+			log.Println("Cannot cust userID from fiber ctx to int. user.delivery.http.Logout")
 		}
 
 		result, err := h.userUC.Logout(c.Context(), userID)
