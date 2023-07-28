@@ -10,6 +10,11 @@ import (
 	pgRepoUser "ninja-chat-core-api/internal/user/repository"
 	redisRepoUser "ninja-chat-core-api/internal/user/repository"
 	usecaseUser "ninja-chat-core-api/internal/user/usecase"
+
+	httpConn "ninja-chat-core-api/internal/conn/delivery/http"
+	pgRepoConn "ninja-chat-core-api/internal/conn/repository"
+	usecaseConn "ninja-chat-core-api/internal/conn/usecase"
+
 	"ninja-chat-core-api/pkg/storage/postgres"
 	redisClient "ninja-chat-core-api/pkg/storage/redis"
 	"os"
@@ -92,22 +97,27 @@ func mapHandler(cfg *config.Config, db *sqlx.DB, rdb *redisSource.Client) (*fibe
 	// repository
 	userPGRepo := pgRepoUser.NewUserPGRepo(cfg, db)
 	userRedisRepo := redisRepoUser.NewRedisRepo(cfg, rdb)
+	connPGRepo := pgRepoConn.NewConnPGRepo(db)
 
 	// usecase
 	userUC := usecaseUser.NewUserUsecase(cfg, userPGRepo, userRedisRepo)
+	connUC := usecaseConn.NewConnUsecase(cfg, connPGRepo)
 
 	// handler
 	userHTTP := httpUser.NewUserHandler(cfg, userUC)
+	connHTTP := httpConn.NewConnHandler(cfg, connUC)
 	// productGRPC := grpcProduct.NewProductHandler(productUC)
 
 	// groups
 	apiGroup := app.Group("api")
 	userGroup := apiGroup.Group("user")
+	connGroup := apiGroup.Group("conn")
 
 	mw := middleware.NewMDWManager(cfg, userUC)
 
 	// routes
 	httpUser.MapUserRoutes(userGroup, mw, userHTTP)
+	httpConn.MapConnRoutes(connGroup, mw, connHTTP)
 
 	// create grpc dependencyes
 	deps := server.Deps{ /* ProductDeps: productGRPC */ }
