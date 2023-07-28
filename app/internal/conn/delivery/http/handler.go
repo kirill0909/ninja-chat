@@ -25,7 +25,7 @@ func (h *ConnHandler) SendMessage() fiber.Handler {
 		var request models.SendMessageRequest
 		result, err := h.connUC.SendMessage(c.Context(), request)
 		if err != nil {
-			log.Println(err)
+			log.Printf("%s:%s conn.delivery.http.SendMessage", err.Error(), result.Error)
 			return c.Status(result.Code).JSON(result)
 		}
 
