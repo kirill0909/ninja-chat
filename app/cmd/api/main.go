@@ -97,7 +97,7 @@ func mapHandler(cfg *config.Config, db *sqlx.DB, rdb *redisSource.Client) (*fibe
 
 	// repository
 	userPGRepo := pgRepoUser.NewUserPGRepo(cfg, db)
-	userRedisRepo := redisRepoUser.NewRedisRepo(cfg, rdb)
+	userRedisRepo := redisRepoUser.NewUserRedisRepo(cfg, rdb)
 	connPGRepo := pgRepoConn.NewConnPGRepo(db)
 	connRedisRepo := redisRepoConn.NewConnRedisRepo(rdb)
 
