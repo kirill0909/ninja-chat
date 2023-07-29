@@ -6,5 +6,5 @@ import (
 )
 
 type Usecase interface {
-	SendMessage(ctx context.Context, sendMessageRequest models.SendMessageRequest) (result models.SendMessageResponse, err error)
+	SendMessage(ctx context.Context, request models.SendMessageRequest) (result models.SendMessageResponse, err error)
 }
