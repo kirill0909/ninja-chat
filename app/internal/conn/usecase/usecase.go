@@ -13,18 +13,19 @@ import (
 )
 
 type ConnUsecase struct {
-	cfg      *config.Config
-	connRepo conn.PGRepo
+	cfg           *config.Config
+	connPGRepo    conn.PGRepo
+	connRedisRepo conn.RedisRepo
 }
 
-func NewConnUsecase(cfg *config.Config, connRepo conn.PGRepo) conn.Usecase {
-	return &ConnUsecase{cfg: cfg, connRepo: connRepo}
+func NewConnUsecase(cfg *config.Config, connRepo conn.PGRepo, connRedisRepo conn.RedisRepo) conn.Usecase {
+	return &ConnUsecase{cfg: cfg, connPGRepo: connRepo, connRedisRepo: connRedisRepo}
 }
 
 func (u *ConnUsecase) SendMessage(ctx context.Context, request models.SendMessageRequest) (
 	result models.SendMessageResponse, err error) {
 
-	result, err = u.connRepo.SendMessage(ctx, request)
+	result, err = u.connPGRepo.SendMessage(ctx, request)
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.Code == violatesForeignKeyCode {
@@ -35,6 +36,10 @@ func (u *ConnUsecase) SendMessage(ctx context.Context, request models.SendMessag
 		return models.SendMessageResponse{Error: sendMessageError, Code: fiber.ErrInternalServerError.Code}, err
 	}
 	// TODO: save a message in redis
+
+	if err = u.connRedisRepo.SendMessage(ctx, request); err != nil {
+		return
+	}
 
 	return
 }
