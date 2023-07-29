@@ -3,6 +3,7 @@ package conn
 type SendMessageRequest struct {
 	RecipientID int    `json:"recipientID" validate:"required"`
 	Message     string `json:"message" validate:"required"`
+	MessageUUID string
 	UserID      int
 }
 

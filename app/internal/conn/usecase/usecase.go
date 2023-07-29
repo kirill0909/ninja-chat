@@ -8,6 +8,7 @@ import (
 	models "ninja-chat-core-api/internal/models/conn"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/jackc/pgconn"
 	"github.com/pkg/errors"
 )
@@ -25,6 +26,8 @@ func NewConnUsecase(cfg *config.Config, connRepo conn.PGRepo, connRedisRepo conn
 func (u *ConnUsecase) SendMessage(ctx context.Context, request models.SendMessageRequest) (
 	result models.SendMessageResponse, err error) {
 
+	request.MessageUUID = uuid.New().String()
+
 	result, err = u.connPGRepo.SendMessage(ctx, request)
 	if err != nil {
 		var pgErr *pgconn.PgError
@@ -33,12 +36,11 @@ func (u *ConnUsecase) SendMessage(ctx context.Context, request models.SendMessag
 				Error: fmt.Sprintf(sendMessageNonExistsUser, request.RecipientID),
 				Code:  fiber.ErrBadRequest.Code}, err
 		}
-		return models.SendMessageResponse{Error: sendMessageError, Code: fiber.ErrInternalServerError.Code}, err
+		return models.SendMessageResponse{Error: sendMessagePGError, Code: fiber.ErrInternalServerError.Code}, err
 	}
-	// TODO: save a message in redis
 
 	if err = u.connRedisRepo.SendMessage(ctx, request); err != nil {
-		return
+		return models.SendMessageResponse{Error: sendMessageRedisError, Code: fiber.ErrInternalServerError.Code}, err
 	}
 
 	return
