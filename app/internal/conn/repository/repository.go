@@ -23,7 +23,7 @@ func (r *ConnPGRepo) SendMessage(ctx context.Context, request models.SendMessage
 	result models.SendMessageResponse, err error) {
 	tx, err := r.db.BeginTxx(ctx, nil)
 	if err != nil {
-		return models.SendMessageResponse{Error: "unable to begin transaction", Code: 500}, err
+		return
 	}
 	defer func() {
 		err := tx.Rollback()
@@ -34,16 +34,16 @@ func (r *ConnPGRepo) SendMessage(ctx context.Context, request models.SendMessage
 
 	var messageID int
 	if err = tx.GetContext(ctx, &messageID, querySendMessageText, request.Message); err != nil {
-		return models.SendMessageResponse{Error: "unable to save message text. txx", Code: 500}, err
+		return
 	}
 
 	var messageInfoID int
 	if err = tx.GetContext(ctx, &messageInfoID, querySaveMessageInfo, request.UserID, request.RecipientID, messageID); err != nil {
-		return models.SendMessageResponse{Error: "unable to save message info. txx", Code: 500}, err
+		return
 	}
 
 	if err = tx.Commit(); err != nil {
-		return models.SendMessageResponse{Error: "unable to commit transaction", Code: 500}, err
+		return
 	}
 
 	return models.SendMessageResponse{Success: true, Code: 200}, nil
