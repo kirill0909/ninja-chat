@@ -41,5 +41,5 @@ func (u *ConnUsecase) SaveMessage(ctx context.Context, request models.SaveMessag
 		return models.SaveMessageResponse{Error: saveMessageRedisError, Code: fiber.ErrInternalServerError.Code}, err
 	}
 
-	return
+	return models.SaveMessageResponse{MessageID: result.MessageID, Success: true, Code: 200}, nil
 }

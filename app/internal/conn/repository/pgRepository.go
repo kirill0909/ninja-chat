@@ -46,5 +46,6 @@ func (r *ConnPGRepo) SaveMessage(ctx context.Context, request models.SaveMessage
 		return
 	}
 
-	return models.SaveMessageResponse{MessageID: messageID, Success: true, Code: 200}, nil
+	result.MessageID = messageID
+	return
 }
