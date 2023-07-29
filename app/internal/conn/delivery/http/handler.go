@@ -20,13 +20,13 @@ func NewConnHandler(cfg *config.Config, connUC conn.Usecase) conn.Handler {
 	return &ConnHandler{cfg: cfg, connUC: connUC}
 }
 
-func (h *ConnHandler) SendMessage() fiber.Handler {
+func (h *ConnHandler) SaveMessage() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 
-		var request models.SendMessageRequest
+		var request models.SaveMessageRequest
 		userID, ok := c.Locals("userID").(int)
 		if !ok {
-			log.Println("Cannot cust userID from fiber ctx to int. conn.delivery.http.SendMessage")
+			log.Println("Cannot cust userID from fiber ctx to int. conn.delivery.http.SaveMessage")
 			return c.SendStatus(fiber.StatusInternalServerError)
 		}
 		request.UserID = userID
@@ -36,9 +36,9 @@ func (h *ConnHandler) SendMessage() fiber.Handler {
 			return c.SendStatus(fiber.StatusBadRequest)
 		}
 
-		result, err := h.connUC.SendMessage(c.Context(), request)
+		result, err := h.connUC.SaveMessage(c.Context(), request)
 		if err != nil {
-			log.Printf("%s:%s conn.delivery.http.SendMessage", err.Error(), result.Error)
+			log.Printf("%s:%s conn.delivery.http.SaveMessage", err.Error(), result.Error)
 			return c.Status(result.Code).JSON(result)
 		}
 

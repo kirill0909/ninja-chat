@@ -6,9 +6,9 @@ import (
 )
 
 type PGRepo interface {
-	SendMessage(ctx context.Context, request models.SendMessageRequest) (result models.SendMessageResponse, err error)
+	SaveMessage(ctx context.Context, request models.SaveMessageRequest) (result models.SaveMessageResponse, err error)
 }
 
 type RedisRepo interface {
-	SendMessage(ctx context.Context, request models.SendMessageRequest) (err error)
+	SaveMessage(ctx context.Context, request models.SaveMessageRequest) (err error)
 }

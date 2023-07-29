@@ -18,10 +18,10 @@ func NewConnRedisRepo(db *redis.Client) conn.RedisRepo {
 	return &ConnRedisRepo{db: db}
 }
 
-func (r *ConnRedisRepo) SendMessage(ctx context.Context, request models.SendMessageRequest) (err error) {
+func (r *ConnRedisRepo) SaveMessage(ctx context.Context, request models.SaveMessageRequest) (err error) {
 
 	// TODO: give user abillity to set expired time for message
-	key := fmt.Sprintf("%d_%s", request.RecipientID, request.MessageUUID)
+	key := fmt.Sprintf("%d_%d_%d", request.UserID, request.RecipientID, request.MessageID)
 	if err = r.db.Set(ctx, key, request.Message, 0).Err(); err != nil {
 		return
 	}

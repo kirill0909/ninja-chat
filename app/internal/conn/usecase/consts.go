@@ -1,8 +1,8 @@
 package usecase
 
 const (
-	violatesForeignKeyCode   = "23503"
-	sendMessageNonExistsUser = "attampt to send a message to a user(%d) who does not exists"
-	sendMessagePGError       = "unable to save message in db"
-	sendMessageRedisError    = "unable to send message in redis"
+	violatesForeignKeyCode      = "23503"
+	saveMessageForNonExistsUser = "unable to save user(%d) message(%s), because user(%d) does not exists"
+	saveMessagePGError          = "unable to save message in db"
+	saveMessageRedisError       = "unable to save message in redis"
 )

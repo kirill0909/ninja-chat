@@ -19,8 +19,8 @@ func NewConnPGRepo(db *sqlx.DB) conn.PGRepo {
 	return &ConnPGRepo{db: db}
 }
 
-func (r *ConnPGRepo) SendMessage(ctx context.Context, request models.SendMessageRequest) (
-	result models.SendMessageResponse, err error) {
+func (r *ConnPGRepo) SaveMessage(ctx context.Context, request models.SaveMessageRequest) (
+	result models.SaveMessageResponse, err error) {
 	tx, err := r.db.BeginTxx(ctx, nil)
 	if err != nil {
 		return
@@ -33,7 +33,7 @@ func (r *ConnPGRepo) SendMessage(ctx context.Context, request models.SendMessage
 	}()
 
 	var messageID int
-	if err = tx.GetContext(ctx, &messageID, querySendMessageText, request.Message); err != nil {
+	if err = tx.GetContext(ctx, &messageID, querySaveMessageText, request.Message); err != nil {
 		return
 	}
 
@@ -46,5 +46,5 @@ func (r *ConnPGRepo) SendMessage(ctx context.Context, request models.SendMessage
 		return
 	}
 
-	return models.SendMessageResponse{Success: true, Code: 200}, nil
+	return models.SaveMessageResponse{MessageID: messageID, Success: true, Code: 200}, nil
 }
