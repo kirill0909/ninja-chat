@@ -7,5 +7,5 @@ import (
 )
 
 func MapConnRoutes(connRoutes fiber.Router, mw *middleware.MDWManager, h conn.Handler) {
-	connRoutes.Post("/send_message", mw.AuthedMiddleware(), h.SendMessage())
+	connRoutes.Post("/save_message", mw.AuthedMiddleware(), h.SaveMessage())
 }

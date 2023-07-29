@@ -1,13 +1,15 @@
 package conn
 
-type SendMessageRequest struct {
-	UserIDFrom int    `json:"userIDFrom" validate:"required"`
-	UserIDTo   int    `json:"userIDTo" validate:"required"`
-	Message    string `json:"message" validate:"required"`
+type SaveMessageRequest struct {
+	RecipientID int    `json:"recipientID" validate:"required"`
+	Message     string `json:"message" validate:"required"`
+	MessageID   int
+	UserID      int
 }
 
-type SendMessageResponse struct {
-	Success bool   `json:"success,omitempty"`
-	Error   string `json:"error,omitempty"`
-	Code    int    `json:"code,omitempty"`
+type SaveMessageResponse struct {
+	MessageID int    `json:"messageID,omitempty"`
+	Success   bool   `json:"success,omitempty"`
+	Error     string `json:"error,omitempty"`
+	Code      int    `json:"code,omitempty"`
 }

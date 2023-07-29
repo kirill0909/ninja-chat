@@ -13,6 +13,7 @@ import (
 
 	httpConn "ninja-chat-core-api/internal/conn/delivery/http"
 	pgRepoConn "ninja-chat-core-api/internal/conn/repository"
+	redisRepoConn "ninja-chat-core-api/internal/conn/repository"
 	usecaseConn "ninja-chat-core-api/internal/conn/usecase"
 
 	"ninja-chat-core-api/pkg/storage/postgres"
@@ -96,12 +97,13 @@ func mapHandler(cfg *config.Config, db *sqlx.DB, rdb *redisSource.Client) (*fibe
 
 	// repository
 	userPGRepo := pgRepoUser.NewUserPGRepo(cfg, db)
-	userRedisRepo := redisRepoUser.NewRedisRepo(cfg, rdb)
+	userRedisRepo := redisRepoUser.NewUserRedisRepo(cfg, rdb)
 	connPGRepo := pgRepoConn.NewConnPGRepo(db)
+	connRedisRepo := redisRepoConn.NewConnRedisRepo(rdb)
 
 	// usecase
 	userUC := usecaseUser.NewUserUsecase(cfg, userPGRepo, userRedisRepo)
-	connUC := usecaseConn.NewConnUsecase(cfg, connPGRepo)
+	connUC := usecaseConn.NewConnUsecase(cfg, connPGRepo, connRedisRepo)
 
 	// handler
 	userHTTP := httpUser.NewUserHandler(cfg, userUC)

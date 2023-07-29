@@ -18,16 +18,16 @@ var (
 	userSessionPrefix = "USER_SESSION"
 )
 
-type RedisRepo struct {
+type UserRedisRepo struct {
 	cfg *config.Config
 	db  *redis.Client
 }
 
-func NewRedisRepo(cfg *config.Config, db *redis.Client) user.RedisRepo {
-	return &RedisRepo{cfg: cfg, db: db}
+func NewUserRedisRepo(cfg *config.Config, db *redis.Client) user.RedisRepo {
+	return &UserRedisRepo{cfg: cfg, db: db}
 }
 
-func (r *RedisRepo) SaveUserSession(ctx context.Context, params models.UserSession) error {
+func (r *UserRedisRepo) SaveUserSession(ctx context.Context, params models.UserSession) error {
 
 	key := fmt.Sprintf("%s_%d_%s", userSessionPrefix, params.UserID, params.AccessToken)
 	if err := r.db.Set(ctx, key, params.AccessToken, time.Duration(params.ExpiredAt)).Err(); err != nil {
@@ -36,7 +36,7 @@ func (r *RedisRepo) SaveUserSession(ctx context.Context, params models.UserSessi
 	return nil
 }
 
-func (r *RedisRepo) GetUserSession(ctx context.Context, req models.AuthHeaders) (result models.UserSession, err error) {
+func (r *UserRedisRepo) GetUserSession(ctx context.Context, req models.AuthHeaders) (result models.UserSession, err error) {
 
 	var key string
 	iter := r.db.Scan(ctx, 0, fmt.Sprintf("%s_*_%s", userSessionPrefix, req.AccessToken), 1).Iterator()
@@ -56,7 +56,7 @@ func (r *RedisRepo) GetUserSession(ctx context.Context, req models.AuthHeaders) 
 	return
 }
 
-func (r *RedisRepo) Logout(ctx context.Context, userID int) (result models.LogoutResponse, err error) {
+func (r *UserRedisRepo) Logout(ctx context.Context, userID int) (result models.LogoutResponse, err error) {
 
 	var session string
 	key := fmt.Sprintf("%s_%d_*", userSessionPrefix, userID)
